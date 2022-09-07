@@ -1,7 +1,8 @@
 import { addExif } from '../lib/sticker.js'
 
+
 let handler = async (m, { conn, text }) => {
-  if (!m.quoted) throw 'Reply a sticker!'
+  if (!m.quoted) throw 'Quoted the sticker!'
   let stiker = false
   try {
     let [packname, ...author] = text.split('|')
@@ -15,13 +16,12 @@ let handler = async (m, { conn, text }) => {
     console.error(e)
     if (Buffer.isBuffer(e)) stiker = e
   } finally {
-    if (stiker) conn.sendMessage(m.chat, { sticker: stiker }, { quoted: m })
+    if (stiker) conn.sendFile(m.chat, stiker, 'wm.webp', '', m, false, { asSticker: true })
     else throw 'Conversion failed'
   }
 }
-handler.help = ['wm']
-handler.tags = ['general']
-handler.alias = ['wm', 'take']
-handler.command = /^(take|wm)$/i
+handler.help = ['wm <packname>|<author>']
+handler.tags = ['sticker']
+handler.command = /^wm$/i
 
 export default handler
